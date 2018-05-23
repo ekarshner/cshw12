@@ -26,7 +26,6 @@ def first_pass( commands ):
 
         gotframes = false
         gotbase = false
-        gotvary = false
 
         if c == 'frames':
             num_frames = args[0]
@@ -38,7 +37,7 @@ def first_pass( commands ):
 
         if c == 'vary':
             gotvary = true
-            if (gotvary && !(gotframes)):
+            if !(gotframes):
                 print 'no frames, man.'
                 return
             pass
