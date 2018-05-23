@@ -19,7 +19,34 @@ from draw import *
   with the name being used.
   ==================== """
 def first_pass( commands ):
-    pass
+    for command in commands:
+        print command
+        c = command['op']
+        args = command['args']
+
+        gotframes = false
+        gotbase = false
+        gotvary = false
+
+        if c == 'frames':
+            num_frames = args[0]
+            gotframes = true
+
+        if c == 'basename':
+            basename = args[0]
+            gotbase = true
+
+        if c == 'vary':
+            gotvary = true
+            if (gotvary && !(gotframes)):
+                print 'no frames, man.'
+                return
+            pass
+
+        if (gotframes && !(gotbase)):
+            basename = 'mark'
+            print "you forgot your basename. Now it's 'mark'."
+
 
 """======== second_pass( commands ) ==========
 
