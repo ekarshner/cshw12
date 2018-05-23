@@ -66,6 +66,19 @@ def first_pass( commands ):
   appropirate value.
   ===================="""
 def second_pass( commands, num_frames ):
+    knobs = []
+
+    for i in range(frames):
+        knobs[i] = {}
+
+    for command in commands:
+        print command
+        c = command['op']
+        args = command['args']
+
+        if c = 'vary':
+            #knobs[frames -1][args[0]] is set to some value
+            pass
     pass
 
 
