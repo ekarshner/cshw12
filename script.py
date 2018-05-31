@@ -19,13 +19,14 @@ from draw import *
   with the name being used.
   ==================== """
 def first_pass( commands ):
+    num_frames = 1
+    gotframes = false
+    gotbase = false
+    gotvary = false
     for command in commands:
         print command
         c = command['op']
         args = command['args']
-
-        gotframes = false
-        gotbase = false
 
         if c == 'frames':
             num_frames = args[0]
@@ -36,14 +37,16 @@ def first_pass( commands ):
             gotbase = true
 
         if c == 'vary':
-            if !(gotframes):
-                print 'no frames, man.'
-                return
-            pass
+            gotvary = true
 
-        if (gotframes && !(gotbase)):
+        if (gotvary and not gotframes):
+            print 'vary but no frames, man.'
+            return
+
+        if (gotframes and not gotbase):
             basename = 'mark'
             print "you forgot your basename. Now it's 'mark'."
+
 
 
 """======== second_pass( commands ) ==========
@@ -64,20 +67,35 @@ def first_pass( commands ):
   appropirate value.
   ===================="""
 def second_pass( commands, num_frames ):
-    knobs = []
-
-    for i in range(frames):
-        knobs[i] = {}
+    frames = [{} for i in range(frames)]
 
     for command in commands:
-        print command
         c = command['op']
         args = command['args']
+        knobs = command['knobs']
 
-        if c = 'vary':
-            #knobs[frames -1][args[0]] is set to some value
-            pass
-    pass
+        if c == 'vary':
+            startf = args[0]
+            endf = args[1]
+            startval = args[2]
+            endval = args[3]
+
+            if (startf < 0) or (endf >= num_frames) or (endf < startf):
+                print 'knob argument error for ' + knob
+
+            delta = (endval - startval) / (endf - startf)
+
+            temp = startval
+            i = int(startf)
+
+            for i in int(endf + 1):
+                if frame == endf:
+                    temp = endval
+                knobs[frame][knobs] = temp
+                temp += delta
+                i += 1
+
+
 
 
 def run(filename):
