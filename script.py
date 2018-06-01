@@ -95,12 +95,13 @@ def run(filename):
     """
     This function runs an mdl script
     """
-    file = mdl.parseFile(filename)
 
-    if file:
-        (commands, symbols) = file
+    p = mdl.parseFile(filename)
+
+    if p:
+        (commands, symbols) = p
     else:
-        print "failed."
+        print "Parsing failed."
         return
 
 
@@ -111,6 +112,8 @@ def run(filename):
 
 
     for frame in range(num_frames):
+
+        # set values each time
         view = [0,
                 0,
                 1];
@@ -146,11 +149,14 @@ def run(filename):
         coords = []
         coords1 = []
 
+
+        # deal with knobs
         for knob in knobs[frame]:
             symbols[knob][1] = knobs[frame][knob]
 
+        # actually run commands
         for command in commands:
-            print command
+            # print command
             c = command['op']
             args = command['args']
 
@@ -193,17 +199,26 @@ def run(filename):
                 draw_lines(tmp, screen, zbuffer, color)
                 tmp = []
             elif c == 'move':
-                tmp = make_translate(args[0], args[1], args[2])
+                delta = 1
+                if command['knob']:
+                    delta = symbols[command['knob']][1]
+                tmp = make_translate(args[0] * delta, args[1] * delta, args[2] * delta)
                 matrix_mult(stack[-1], tmp)
                 stack[-1] = [x[:] for x in tmp]
                 tmp = []
             elif c == 'scale':
-                tmp = make_scale(args[0], args[1], args[2])
+                delta = 1
+                if command['knob']:
+                    delta = symbols[command['knob']][1]
+                tmp = make_scale(args[0] * delta, args[1] * delta, args[2] * delta)
                 matrix_mult(stack[-1], tmp)
                 stack[-1] = [x[:] for x in tmp]
                 tmp = []
             elif c == 'rotate':
-                theta = args[1] * (math.pi/180)
+                delta = 1
+                if command['knob']:
+                    delta = symbols[command['knob']][1]
+                theta = args[1] * (math.pi/180) * delta
                 if args[0] == 'x':
                     tmp = make_rotX(theta)
                 elif args[0] == 'y':
@@ -224,17 +239,17 @@ def run(filename):
 
         #print num_frames
         if num_frames > 1:
-            print('saving:' + filename)
+            print("saving file: " + filename)
             filename = "./anim/" + basename + ( "%03d.png" % int(frame) )
-            save_extension(screen, filename)
+            save_extension( screen, filename)
 
-        temp = new_matrix()
-        ident( temp )
-        stack = [ [x[:] for x in temp] ]
+        tmp = new_matrix()
+        ident( tmp )
+        stack = [ [x[:] for x in tmp] ]
         screen = new_screen()
         zbuffer = new_zbuffer()
-        temp = []
+        tmp = []
         step_3d = 20
 
     if num_frames > 1:
-        make_animation(basename)
+        make_animation( basename )
